@@ -8,12 +8,31 @@ const PORT=8000;
 
 
 //Middlware-Plugin
-app.use(express.urlencoded({extended:false}));
+app.use(express.urlencoded({extended:false}))
+
+// app.use((req,res,next) =>{
+//     console.log("Hello from middleware 1 ");
+//     // return res.end("hey");
+//     next();
+// })
+
+// app.use((req,res,next) =>{
+//     console.log("hello from mdddleware 2");
+//     next();
+// })
 
 app.use((req, res, next) => {
-  console.log(`Incoming ${req.method} request to ${req.url}`);
-  next();
+    fs.appendFile('log.txt', `${Date.now()}: ${req.method}: ${req.url}\n`, (err) => {
+        if (err) {
+            console.error("Failed to write log:", err);
+            return res.status(500).send("Internal Server Error");
+        }
+        next();
+    });
 });
+
+
+
 
 
 //routes
